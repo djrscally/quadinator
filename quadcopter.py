@@ -183,10 +183,4 @@ class quadcopter:
 quad = quadcopter()
 #quad.report_status()
 
-import sys
-import time
-while True:
-	sys.stdout.write('\r' + str(quad.get_rotational_error()))
-	sys.stdout.flush()
-	time.sleep(0.5)
-
+quad.run_motor()
