@@ -184,4 +184,6 @@ class quadcopter:
 quad = quadcopter()
 #quad.report_status()
 quad.set_throttle('A', 0.0)
+print("Plug er in")
+time.sleep(5)
 quad.run_motor()
