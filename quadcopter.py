@@ -178,6 +178,8 @@ class quadcopter:
 		while True:
 			rot_error = self.get_rotational_error(0.0,0.0,0.0)[1] / 180.0
 			self.set_throttle('A', rot_error)
+			sys.stdout.write('\r' + str(self.get_pitch_roll()[1]))
+			sys.stdout.flush()
 			
 		return None
 
