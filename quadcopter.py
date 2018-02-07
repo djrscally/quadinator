@@ -177,7 +177,7 @@ class quadcopter:
 		"""
 		while True:
 			rot_error = self.get_rotational_error(0.0,0.0,0.0)[1] / 180.0
-			self.set_throttle('A', throttle_setting)
+			self.set_throttle('A', rot_error)
 			
 		return None
 
