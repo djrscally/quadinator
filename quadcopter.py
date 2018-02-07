@@ -46,6 +46,7 @@ class quadcopter:
 		# also need to configure the frequency using PCA9685.set_pwm_freq()...again, read the datasheet. 
 		# This is the first bit that can be threaded realistically.
 		self.motors.set_pwm(channel, 0, 410)
+		print("Plug in the battery now")
 		time.sleep(5)
 		self.motors.set_pwm(channel, 0, 205)
 			
@@ -182,5 +183,5 @@ class quadcopter:
 
 quad = quadcopter()
 #quad.report_status()
-
+quad._calibrate_min_max_single_throttle(0)
 quad.run_motor()
