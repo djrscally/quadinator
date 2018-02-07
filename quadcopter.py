@@ -167,7 +167,7 @@ class quadcopter:
 				C	     D
 		"""
 		pulse_width = self.min_pulse + (throttle_setting * self.pulse_range)
-		self.motors.set_pwm(self.motor_map[motor], 0, pulse_width)
+		self.motors.set_pwm(self.motor_map[motor], 0, int(pulse_width))
 
 		return None 
 
