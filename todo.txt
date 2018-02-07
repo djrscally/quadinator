@@ -1,0 +1,46 @@
+1. Read from accelerometer. -DONE, although it's actually the magnetic compass...because an accelerometer just measures acceleration, not orientation. You tit.
+	Modules: actually need to write a class for this one as the library doesnt have one.v HMC5883L is the gyro. The rest can fuck off till I'm ready to use them. Who needs a temperature sensor anyway? 
+2. Reliably control the motors through PWM.
+	-Onto this then...guess I'll buy the replacement soldering iron and cry a bit about the expense. I'll just try the Pi for now and then, assuming it works, I'll get the PiHat fixed up.
+	- Need posts to stand the PiHat properly. Also; can you get I2C through the hat? Bit fucked if not.
+	- Why are you blogging here? Blog on the fucking blog moron.
+3. Figure out threading, as you're definitely gonna need that.
+4. Figure out how a PID works and build a draft.
+	- well, lets for now JUST consider a single axis. probably x
+	- maybe I could calculate the % of the current error from the total possible error, and set the motor's throttles at the equivalent %. For example, a 90* error in X axis is .5 the possible error (because 359* is the same as -1*)
+		so i could set the difference between the appropriate motor's throttles to be 50% the maximum throttle. I.E. set A to 0.25 and B to 0.75, or A to 0.1 and B to 0.6. I like this because it meshes in well with different
+		throttle settings for other purposes (for example, killvel). So what I need to look to set is throttle GRADIENTs across motor pairs. (or pairs of pairs in a quad build).
+	-So yeah the above is good. So what you need to do is...get the current error from the desired setting, and set the throttle gradient to a % that equates to the % of possible error, modified by the tuning parameters and the difference from the error recorded in the previous loop (I.E. the D part). Fuck time, so basically it is a PD controller.
+	- for accel, change the desired orientation to a braking one (i.e. tilt the quad)
+5. Balance an arm using the integrated sensors and motors.
+	- This will need:
+		a) the magnetic compass to tell whether the starting position is 'straight and level' or not and also to determine when we're approaching the reference position (i.e. 0, 0, ?)
+		b) the gyroscope to get pitch/roll rate. This would be the derivative part of a PID, and maybe isn't needed. We'll see.
+		c) a PID controller to calculate control variable, which will be a velocity gradient between the two motors
+		d) code to handoff new velocity settings to the motors.
+6. Radio control to roll 2 props, then return to horizontal when the signal finishes.
+	- Now ideally, the "return to level" program should continue to work in the 2 axes that are not currently under manual control
+7. Include killrot in Z-axis into the 'return to straight and level' default.
+
+
+Principles:
+
+1) How to fix problems:
+	
+	Problem: Rotation error is not 0.
+		x - apply throtle gradient across AC and BD
+		y - apply throttle gradient across AB and CB
+		z - apply throttle gradient across AD and BC
+
+	Problem: Acceleration error is not 0
+		x - change pitch setpoint (% of max pitch)
+		y - change roll setpoint (% of max roll)
+		z - change throttle setting universally
+
+Acceleration - values are logged in LSB. Scale factor 3.9 milligravities. To convert to gravities, multiply by 3.9 and divide by 980.665. TOO ROUGH
+
+to actually get it, do... G = raw_value * (2 / 2^9). These are based on the default settings. Actual math in the doc below
+
+Measuring orientation. Actually, you measure orientation using the accelerometer by getting the angle of acceleration due to earth's gravity. https://thecontinuum.com/tag/adxl345/#docs
+
+Done! Pitch and roll sorted. Positive is pitch up, negative is pitch down. Roll left is negative, roll right is positive.
