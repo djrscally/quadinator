@@ -12,6 +12,7 @@ from sensors.L3G4200D.L3G4200D import L3G4200D # Gyroscope (rotational accelerat
 from Adafruit_BMP import BMP085 # Temp and Pressure Sensor (Coarse reading altimeter and...fuck knows what use temperature might be.)
 from Adafruit_PCA9685 import PCA9685 # PWM Pi Hat, Controlling Motors and any servos I might include.
 import math
+import time
 
 class quadcopter:
 
@@ -31,21 +32,31 @@ class quadcopter:
 		self.motor_map = {'A':0, 'B':1, 'C':2, 'D':3}
 
 		# Min/Max pulse width for the PWM, read from the data sheet of the ESC
-		self.min_pulse = 150
-		self.max_pulse = 600
+		self.min_pulse = 205
+		self.max_pulse = 410
 		self.pulse_range = self.max_pulse - self.min_pulse
 
 		return None
 
-	def _calibrate_min_max_throttle(self):
+	def _calibrate_min_max_single_throttle(self, channel):
 		"""\
 		Runs through the initialisation of the ESCs. Possibly configurable depending on the ESC
 		but for now I'll just hardcode in the HobbyKing ones (*spits*).
 		"""
 		# also need to configure the frequency using PCA9685.set_pwm_freq()...again, read the datasheet. 
 		# This is the first bit that can be threaded realistically.
-		
+		self.motors.set_pwm(channel, 0, 410)
+		time.sleep(5)
+		self.motors.set_pwm(channel, 0, 205)
+			
 		return None # because I'm a placeholder.
+		
+	def _calibrate_min_max_all_throttles(self, channels):
+		"""\
+		Initialises all of the ESCs at once.
+		"""
+		return None
+		
 
 	def report_status(self):
 		""" \
@@ -75,8 +86,8 @@ class quadcopter:
 		Basically will just calculate how far the quad is from the  \
 		desired orientation.
 		"""
-		obs_x, obs_y, obs_z = self.get_orientation()
-		return (x_targ - obs_x, y_targ - obs_y, z_targ - obs_z)
+		obs_x, obs_y = self.get_pitch_roll()
+		return (x_targ - obs_x, y_targ - obs_y)#, z_targ - obs_z)
 
 	def get_acceleration_error(self, x_targ, y_targ, z_targ):
 		"""\
@@ -151,24 +162,22 @@ class quadcopter:
 				    /\
 				   /  \
 			  	  /    \
-				 /	\
-				C	 D
-
+				 /	    \
+				C	     D
+		"""
 		pulse_width = self.min_pulse + (throttle * self.pulse_range)
 		self.motors.set_pwm(self.motor_map[motor], 0, pulse_width)
 
 		return None 
-		"""
 
-	def figure_out_throttle_gradient(self):
+	def run_motor(self):
 		"""\
+		For now, just run the fucking motor
 		"""
-
-		pitch_grad = 0
-		roll_grad = 0
-		z_accel = 0
-
-		
+		while True:
+			rot_error = self.get_rotational_error()[1] / 180.0
+			self.set_throttle('A', throttle_setting)
+			
 		return None
 
 quad = quadcopter()
@@ -177,7 +186,7 @@ quad = quadcopter()
 import sys
 import time
 while True:
-	sys.stdout.write('\r' + str(quad.get_pitch_roll()))
+	sys.stdout.write('\r' + str(quad.get_rotational_error()))
 	sys.stdout.flush()
 	time.sleep(0.5)
 
