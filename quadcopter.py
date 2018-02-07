@@ -183,5 +183,5 @@ class quadcopter:
 
 quad = quadcopter()
 #quad.report_status()
-quad._calibrate_min_max_single_throttle(0)
+quad.set_throttle('A', 0.0)
 quad.run_motor()
