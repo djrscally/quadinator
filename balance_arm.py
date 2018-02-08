@@ -13,12 +13,15 @@ import sys
 
 quad = quadcopter()
 
-desired_roll_angle = 0.0
-max_roll_angle
+pitch_setpoint = 0.0
+roll_setpoint = 0.0
+z_accel_setpoint = 1.0
+
+max_z_error = 1.0 # we'll just normalise to 1G maybe.
 
 while True:
-	current_roll_angle = quad.get_pitch_roll()[0] # 0 to get pitch, roll comes second
-	current_error = desired_roll_angle - current_roll_angle
-	# error as percentage of possible error
-
-	# tailor that into a directional throttle gradient somehow
+	current_roll_error = quad.get_rotational_error(pitch_setpoint, roll_setpoint, z_accel_setpoint)[1] # get the roll error
+	z_accel_error = quad.get_acceleration_error(0.0,0.0,z_accel_setpoint)[2]
+	
+	both_throttles = 
+	
