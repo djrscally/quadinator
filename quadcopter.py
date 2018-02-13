@@ -178,6 +178,7 @@ class quadcopter:
 		while True:
 			rot_error = self.get_rotational_error(0.0,0.0,0.0)[1] / 180.0
 			self.set_throttle('A', rot_error)
+			s2lf.set_throttle('B', rot_error)
 			sys.stdout.write('\r' + str(self.get_pitch_roll()[1]))
 			sys.stdout.flush()
 			
@@ -185,12 +186,14 @@ class quadcopter:
 
 
 quad = quadcopter()
+quad._calibrate_min_max_single_throttle(1)
 while True:
 	sys.stdout.write('\r' + str(quad.get_acceleration()))
 	sys.stdout.flush()
 	time.sleep(0.5)
 
 """
+
 quad = quadcopter()
 #quad.report_status()
 quad.set_throttle('A', 0.0)
