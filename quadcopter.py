@@ -187,7 +187,7 @@ class quadcopter:
 	def manual_control(self, channel):
 		while True:
 			a = raw_input("Set the throttle to: ")
-			quad.set_pwm(channel, 0, a)
+			quad.motors.set_pwm(channel, 0, a)
 
 
 quad = quadcopter()
