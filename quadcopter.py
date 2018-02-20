@@ -193,7 +193,7 @@ while True:
 	time.sleep(0.5)
 
 """
-
+push so it pulls
 quad = quadcopter()
 #quad.report_status()
 quad.set_throttle('A', 0.0)
