@@ -183,16 +183,23 @@ class quadcopter:
 			sys.stdout.flush()
 			
 		return None
+		
+	def manual_control(self, channel):
+		while True:
+			a = raw_input("Set the throttle to: ")
+			quad.set_pwm(channel, 0, a)
 
 
 quad = quadcopter()
+quad.manual_control(0)
+"""
 quad._calibrate_min_max_single_throttle(1)
 while True:
 	sys.stdout.write('\r' + str(quad.get_acceleration()))
 	sys.stdout.flush()
 	time.sleep(0.5)
 
-"""
+
 push so it pulls
 quad = quadcopter()
 #quad.report_status()
